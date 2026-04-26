@@ -1,3 +1,0 @@
-# AYC (Agents YAML Configuration)
-
-

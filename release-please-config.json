@@ -3,6 +3,6 @@
   "handleGHRelease": true,
   "bumpMinorPreMajor": false,
   "extraFiles": [
-    "src/version.py"
+    "agent/version.py"
   ]
 }

@@ -1,7 +1,7 @@
 [project]
-name = ".github"
+name = "github_adk_agent_config"
 version = "0.1.0"
-description = "Add your description here"
+description = "Example GitHub ADK Agent Config Project"
 readme = "README.md"
 requires-python = ">=3.12.12"
 dependencies = [
