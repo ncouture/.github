@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/google/adk-python/refs/heads/main/src/google/adk/agents/config_schemas/AgentConfig.json
+
+name: root_agent
+agent_class: LlmAgent
+model: gemini-2.5-flash
+description: Main orchestration agent that delegates user queries to the appropriate specialized sub-agents.
+
+instruction: |
+  You are the root orchestrator. You help users by analyzing their request and delegating 
+  it to either the 'search_agent' for gathering information or the 'writer_agent' for drafting.
+  Follow these steps:
+  1. If the user needs up-to-date information from the internet, delegate to search_agent.
+  2. If the user wants a report or a summary written, delegate to writer_agent.
+  3. Combine their outputs into a final coherent response.
+
+# Links to multiple sub-agent definitions to create a Multi-Agent architecture
+sub_agents:
+  - config_path: search_agent.yaml
+  - config_path: writer_agent.yaml
+
+# Hooks for tracking and callbacks
+after_model_callbacks:
+  - name: core.callbacks.logging_callback

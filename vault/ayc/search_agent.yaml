@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/google/adk-python/refs/heads/main/src/google/adk/agents/config_schemas/AgentConfig.json
+
+name: search_agent
+agent_class: LlmAgent
+model: gemini-2.5-pro
+description: An agent dedicated to searching the internet and retrieving structured data via tools.
+
+instruction: |
+  You are a search specialist. When given a query, use the tools provided to find the most accurate
+  and up-to-date information on the internet. Return the summarized results to the root agent.
+
+# Defines capabilities including built-in tools and tools requiring specific arguments (like MCPs)
+tools:
+  - name: google_search
+  - name: MCPToolset
+    args:
+      stdio_connection_params:
+        command: "markitdown-mcp"
+        timeout: 10
+
+# Fine-grained control over LLM execution parameters
+generate_content_config:
+  temperature: 0.2
+  top_p: 0.8
+  top_k: 40
+  max_output_tokens: 8192

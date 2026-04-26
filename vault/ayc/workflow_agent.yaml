@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/google/adk-python/refs/heads/main/src/google/adk/agents/config_schemas/AgentConfig.json
+
+name: data_pipeline_agent
+# Utilizing a structural workflow class rather than an LLM agent directly
+agent_class: SequentialAgent
+description: A workflow agent that forces the execution of sub-agents in a strict, sequential order.
+
+# Because this is a structural node, it does not require an LLM model or instruction.
+# It simply flows execution sequentially from search to writing.
+sub_agents:
+  - config_path: search_agent.yaml
+  - config_path: writer_agent.yaml
