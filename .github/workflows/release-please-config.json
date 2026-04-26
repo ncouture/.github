@@ -1,5 +1,5 @@
 {
-  "releaseType": "python",
+  "releaseType": "simple",
   "handleGHRelease": true,
   "bumpMinorPreMajor": false,
   "extraFiles": [
