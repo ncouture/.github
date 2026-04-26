@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/google/adk-python/refs/heads/main/src/google/adk/agents/config_schemas/AgentConfig.json
+
+name: writer_agent
+agent_class: LlmAgent
+model: gemini-2.5-flash
+description: An agent that takes raw research and writes a comprehensive markdown report.
+
+instruction: |
+  You are an expert writer. Take the context provided to you and write a beautiful,
+  well-structured Markdown report. Use your tools to fetch any necessary external documents.
+
+tools:
+  - name: custom_tools.fetch_gcs_docs
+
+# Advanced feature: Injecting cloud assets automatically from Tool responses
+dynamic_file_injection:
+  enabled: true
+  gcs_url_patterns:
+    - "gs://adk-corpus-bucket/*"
+  max_files_per_response: 10
+  injection_strategy: "append"
+  tool_name_filters:
+    - "fetch_gcs_docs"
+
+after_model_callbacks:
+  - name: metrics.callbacks.eval_callback

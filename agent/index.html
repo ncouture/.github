@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Identity Services Sign-In</title>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: auto;
+        }
+        #user-profile {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #user-profile img {
+            border-radius: 50%;
+            width: 75px;
+            height: 75px;
+            margin-bottom: 1rem;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Sign in to continue</h2>
+
+    <div id="google-btn-container"></div>
+
+    <div id="user-profile">
+        <img id="profile-picture" src="" alt="Profile Picture">
+        <h3 id="profile-name"></h3>
+        <p id="profile-email"></p>
+        <button class="logout-btn" onclick="handleSignOut()">Sign Out</button>
+    </div>
+
+    <script>
+        // 3. Callback function triggered upon a successful sign-in
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+
+            // Decode the JWT token payload
+            const payload = decodeJwtResponse(response.credential);
+            console.log("Decoded Payload:", payload);
+
+            // Update UI with user info
+            document.getElementById('profile-name').innerText = payload.name;
+            document.getElementById('profile-email').innerText = payload.email;
+            document.getElementById('profile-picture').src = payload.picture;
+
+            // Toggle UI states
+            document.getElementById('google-btn-container').style.display = 'none';
+            document.getElementById('user-profile').style.display = 'block';
+
+            // NOTE: In a real-world production app, you should send `response.credential`
+            // to your backend server via a POST request and verify it securely using
+            // Google's official backend libraries before granting access.
+        }
+
+        // Helper function to decode JWT token on the frontend
+        function decodeJwtResponse(token) {
+            let base64Url = token.split('.')[1];
+            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        }
+
+        // 4. Initialize Google Identity Services
+        window.onload = function () {
+            google.accounts.id.initialize({
+                // REPLACE with your actual Client ID
+                client_id: 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
+                callback: handleCredentialResponse
+            });
+
+            // 5. Render the button dynamically
+            google.accounts.id.renderButton(
+                document.getElementById("google-btn-container"),
+                { theme: "outline", size: "large", shape: "rectangular" } // Customization options
+            );
+
+            // Optional: Trigger the Google One Tap pop-up dialog
+            google.accounts.id.prompt();
+        };
+
+        // 6. Basic Sign-Out handler (clears client-side state)
+        function handleSignOut() {
+            document.getElementById('user-profile').style.display = 'none';
+            document.getElementById('google-btn-container').style.display = 'block';
+
+            // If you want to disable Auto Sign-In/One Tap temporarily after logout
+            google.accounts.id.disableAutoSelect();
+        }
+    </script>
+</body>
+</html>
