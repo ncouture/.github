@@ -27,6 +27,6 @@ def health_check():
 
 if __name__ == "__main__":
     # Serve the application using uvicorn
-    print(f"Starting ADK Server on http://0.0.0.0:8000")
+    print("Starting ADK Server on http://0.0.0.0:8000")
     print(f"Make sure your .yaml files are in: {AGENT_DIR}")
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("agent_config_server:app", host="0.0.0.0", port=8000, reload=True)
